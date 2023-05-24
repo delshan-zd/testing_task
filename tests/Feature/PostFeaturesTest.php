@@ -107,7 +107,7 @@ class postFeaturesTest extends TestCase
            ]);
         }
         else{
-            if( ! like::where('user_id',$data['user_id'])->where('post_id',$data['post_id'])->exists())
+            if(  like::where('user_id',$data['user_id'])->where('post_id',$data['post_id'])->exists())
             {
                 $this->assertDatabaseHas('likes',[
                     'user_id'=>$data['user_id'],
@@ -115,7 +115,7 @@ class postFeaturesTest extends TestCase
                 ]);
                 $response->assertRedirect('/');
             }
-            elseif(like::where('user_id',$data['user_id'])->where('post_id',$data['post_id'])->exists()) {
+            elseif(! like::where('user_id',$data['user_id'])->where('post_id',$data['post_id'])->exists()) {
           $this->assertDatabaseMissing('likes',[
               'user_id'=>$data['user_id'],
               'post_id'=>$data['post_id'],
