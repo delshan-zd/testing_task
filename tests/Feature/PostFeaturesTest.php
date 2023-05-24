@@ -87,7 +87,37 @@ class postFeaturesTest extends TestCase
             ]);
         }
     }
+//
+ public function test_store_like_on_post()
+    {
+        $user=User::factory()->create();
+        $data=[
+            'post_id'=>fake()->numberBetween(1, Post::count()),
+            'user_id'=>$user->id
+        ];
+        $response = $this->actingAs($user)->get('/addLike/'.$data['post_id']);
 
+        if ( post::find($data['post_id']) == null ){
+
+            $this->assertDatabaseMissing('likes',[
+               'user_id'=>$data['user_id'],
+               'post_id'=>$data['post_id'],
+           ]);
+        }
+        else{
+            if(! like::where('user_id',$data['user_id'])->where('post_id',$data['post_id'])->exists())
+            {
+                $response->assertStatus(200);
+            }
+            elseif( like::where('user_id',$data['user_id'])->where('post_id',$data['post_id'])->exists()) {
+              $this->assertDatabaseHas('likes',[
+                  'user_id'=>$data['user_id'],
+                  'post_id'=>$data['post_id']
+              ]);
+
+            }
+        }
+    }
    
    
       
